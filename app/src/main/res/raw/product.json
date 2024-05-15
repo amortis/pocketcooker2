@@ -1,0 +1,76 @@
+{
+  "products": [
+    {
+      "_id": "ObjectId(1)",
+      "name": "tomato",
+      "unitOfCalculating": "piece",
+      "icon": "icons/product/tomato.png"
+    },
+    {
+      "_id": "ObjectId(2)",
+      "name": "apple",
+      "unitOfCalculating": "piece",
+      "icon": "icons/product/apple.png"
+    },
+    {
+      "_id": "ObjectId(3)",
+      "name": "banana",
+      "unitOfCalculating": "piece",
+      "icon": "icons/product/banana.png"
+    },
+    {
+      "_id": "ObjectId(4)",
+      "name": "carrot",
+      "unitOfCalculating": "piece",
+      "icon": "icons/product/carrot.png"
+    },
+    {
+      "_id": "ObjectId(5)",
+      "name": "potato",
+      "unitOfCalculating": "piece",
+      "icon": "icons/product/potato.png"
+    },
+    {
+      "_id": "ObjectId(6)",
+      "name": "onion",
+      "unitOfCalculating": "piece",
+      "icon": "icons/product/onion.png"
+    },
+    {
+      "_id": "ObjectId(7)",
+      "name": "lettuce",
+      "unitOfCalculating": "piece",
+      "icon": "icons/product/lettuce.png"
+    },
+    {
+      "_id": "ObjectId(8)",
+      "name": "milk",
+      "unitOfCalculating": "liter",
+      "icon": "icons/product/milk.png"
+    },
+    {
+      "_id": "ObjectId(9)",
+      "name": "bread",
+      "unitOfCalculating": "loaf",
+      "icon": "icons/product/bread.png"
+    },
+    {
+      "_id": "ObjectId(10)",
+      "name": "chicken",
+      "unitOfCalculating": "kilogram",
+      "icon": "icons/product/chicken.png"
+    },
+    {
+      "_id": "ObjectId(11)",
+      "name": "eggs",
+      "unitOfCalculating": "piece",
+      "icon": "icons/product/eggs.png"
+    },
+    {
+      "_id": "ObjectId(12)",
+      "name": "cucumber",
+      "unitOfCalculating": "piece",
+      "icon": "icons/product/cucumber.png"
+    }
+  ]
+}

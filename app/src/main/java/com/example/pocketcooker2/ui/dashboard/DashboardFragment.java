@@ -1,6 +1,8 @@
 package com.example.pocketcooker2.ui.dashboard;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.BufferedReader;
+
 
 import com.example.pocketcooker2.R;
 import com.example.pocketcooker2.data.Product;
@@ -46,19 +56,53 @@ public class DashboardFragment extends Fragment {
         EditText nameEditText = requireView().findViewById(R.id.product_name_edit_text);
         EditText quantityEditText = requireView().findViewById(R.id.product_quantity_edit_text);
 
+
         String name = nameEditText.getText().toString().trim();
         // Здесь вы можете получить другие свойства продукта из формы ввода, если необходимо
 
-        if (!name.isEmpty()) {
+        if (!name.isEmpty() && isProductAvailable(name)) {
             Product product = new Product(name);
             // Здесь вы можете задать другие свойства продукта
             productList.add(product);
             adapter.notifyDataSetChanged();
             nameEditText.setText("");
             quantityEditText.setText("");
+
         }
     }
+    private boolean isProductAvailable(String productName) {
+        try {
+            // Чтение содержимого файла product.json
+            String path = "android.resource://" + getContext().getPackageName() + "/res/raw/" + "product.json";
 
+            BufferedReader reader = new BufferedReader(new FileReader(path));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+            reader.close();
+
+            // Преобразование содержимого файла в объект JSON
+            JSONArray productsArray = new JSONArray(jsonContent.toString());
+
+            // Проверка наличия продукта в массиве
+            for (int i = 0; i < productsArray.length(); i++) {
+                JSONObject productObj = productsArray.getJSONObject(i);
+                String name = productObj.getString("name");
+                Log.d("json", name);
+
+                // Если имя продукта совпадает с введенным, возвращаем true
+                if (productName.equalsIgnoreCase(name)) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("json", "error");
+        }
+        return false;
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
