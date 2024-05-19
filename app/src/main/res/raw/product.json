@@ -1,5 +1,4 @@
-{
-  "products": [
+[
     {
       "_id": "ObjectId(1)",
       "name": "tomato",
@@ -72,5 +71,4 @@
       "unitOfCalculating": "piece",
       "icon": "icons/product/cucumber.png"
     }
-  ]
-}
+]

@@ -50,6 +50,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         void bind(Product product) {
             nameTextView.setText(product.getName());
+            quantityTextView.setText(String.valueOf(product.getQuantity()));
             // Здесь вы можете задать отображение других свойств продукта, если необходимо
         }
     }

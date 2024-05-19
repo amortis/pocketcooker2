@@ -3,6 +3,7 @@ package com.example.pocketcooker2.ui.dashboard;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.BufferedReader;
@@ -28,6 +32,8 @@ import com.example.pocketcooker2.R;
 import com.example.pocketcooker2.data.Product;
 import com.example.pocketcooker2.data.ProductAdapter;
 import com.example.pocketcooker2.databinding.FragmentDashboardBinding;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,10 +64,12 @@ public class DashboardFragment extends Fragment {
 
 
         String name = nameEditText.getText().toString().trim();
+        String quantityString = quantityEditText.getText().toString().trim();
         // Здесь вы можете получить другие свойства продукта из формы ввода, если необходимо
 
-        if (!name.isEmpty()) {
-            Product product = new Product(name);
+        if (!name.isEmpty() && isProductAvailable(name) && !quantityString.isEmpty()) {
+            double quantity = Double.parseDouble(quantityString);
+            Product product = makeProduct(name, quantity);
             // Здесь вы можете задать другие свойства продукта
             productList.add(product);
             adapter.notifyDataSetChanged();
@@ -72,36 +80,51 @@ public class DashboardFragment extends Fragment {
     }
     private boolean isProductAvailable(String productName) {
         try {
-            // Чтение содержимого файла product.json
-            String path = "android.resource://" + getContext().getPackageName() + "/res/raw/" + "product.json";
+            // Получаем InputStream для файла product.json из ресурсов
+            InputStream inputStream = requireContext().getResources().openRawResource(R.raw.product);
 
-            BufferedReader reader = new BufferedReader(new FileReader(path));
-            StringBuilder jsonContent = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                jsonContent.append(line);
-            }
-            reader.close();
+            // Создаем объект Gson
+            Gson gson = new Gson();
 
-            // Преобразование содержимого файла в объект JSON
-            JSONArray productsArray = new JSONArray(jsonContent.toString());
+            // Читаем JSON из InputStream и парсим его в список объектов Product
+            Reader reader = new InputStreamReader(inputStream);
+            List<Product> products = gson.fromJson(reader, new TypeToken<List<Product>>(){}.getType());
 
-            // Проверка наличия продукта в массиве
-            for (int i = 0; i < productsArray.length(); i++) {
-                JSONObject productObj = productsArray.getJSONObject(i);
-                String name = productObj.getString("name");
-                Log.d("json", name);
-
-                // Если имя продукта совпадает с введенным, возвращаем true
-                if (productName.equalsIgnoreCase(name)) {
+            // Проверяем наличие продукта в списке
+            for (Product product : products) {
+                if (productName.equalsIgnoreCase(product.getName())) {
                     return true;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d("json", "error");
         }
         return false;
+    }
+    private Product makeProduct(String productName, double quanity){
+        try {
+            // Получаем InputStream для файла product.json из ресурсов
+            InputStream inputStream = requireContext().getResources().openRawResource(R.raw.product);
+
+            // Создаем объект Gson
+            Gson gson = new Gson();
+
+            // Читаем JSON из InputStream и парсим его в список объектов Product
+            Reader reader = new InputStreamReader(inputStream);
+            List<Product> products = gson.fromJson(reader, new TypeToken<List<Product>>(){}.getType());
+
+            // Проверяем наличие продукта в списке
+            for (Product product : products) {
+                if (productName.equalsIgnoreCase(product.getName())) {
+                    product.setQuantity(quanity);
+                    return product;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // не знаю как лучше сделать
+        return new Product();
     }
     @Override
     public void onDestroyView() {
