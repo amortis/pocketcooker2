@@ -133,13 +133,8 @@ public class DashboardFragment extends Fragment {
     }
     private void openRecipeFragment(List<Product> productList) {
         if (productList.isEmpty()) return;
-        RecipeFragment fragment = new RecipeFragment(productList);
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment_activity_main, fragment); // Используем ID контейнера для фрагментов
-        transaction.addToBackStack(null);
-        transaction.commit();
+        RecipeDialogFragment dialog = RecipeDialogFragment.newInstance(productList);
+        dialog.show(getParentFragmentManager(), "RecipeDialogFragment");
     }
     @Override
     public void onDestroyView() {

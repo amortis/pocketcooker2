@@ -1,5 +1,7 @@
 package com.example.pocketcooker2.data;
 
+import java.util.Objects;
+
 public class Product {
     private double quantity;
     private String _id;
@@ -37,6 +39,21 @@ public class Product {
 
     // Пустой конструктор
     public Product() {}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(name, product.name) &&
+                Objects.equals(unitOfCalculating, product.unitOfCalculating) &&
+                Objects.equals(icon, product.icon);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, unitOfCalculating, icon);
+    }
 
     // Геттеры и сеттеры
     public String get_id() {
