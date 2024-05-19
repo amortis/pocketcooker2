@@ -60,7 +60,7 @@ public class DashboardFragment extends Fragment {
         String name = nameEditText.getText().toString().trim();
         // Здесь вы можете получить другие свойства продукта из формы ввода, если необходимо
 
-        if (!name.isEmpty() && isProductAvailable(name)) {
+        if (!name.isEmpty()) {
             Product product = new Product(name);
             // Здесь вы можете задать другие свойства продукта
             productList.add(product);
