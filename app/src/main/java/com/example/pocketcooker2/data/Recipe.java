@@ -1,4 +1,4 @@
-package com.example.pocketcooker2;
+package com.example.pocketcooker2.data;
 
 import com.example.pocketcooker2.data.Product;
 
@@ -12,6 +12,13 @@ public class Recipe {
     private Map<Product, Double> products;
     private String description;
     private String photo;
+    public Recipe(String _id, String name, Map<Product, Double> products, String description, String photo) {
+        this._id = _id;
+        this.name = name;
+        this.products = products;
+        this.description = description;
+        this.photo = photo;
+    }
 
     public String get_id() {
         return _id;

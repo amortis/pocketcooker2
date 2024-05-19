@@ -2,6 +2,7 @@ package com.example.pocketcooker2.ui.dashboard;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,6 +57,9 @@ public class DashboardFragment extends Fragment {
 
         Button addButton = root.findViewById(R.id.add_product_button);
         addButton.setOnClickListener(v -> addProduct());
+
+        Button calcButton = root.findViewById(R.id.button_calc);
+        calcButton.setOnClickListener(v -> openRecipeFragment(productList));
 
         return root;
     }
@@ -126,9 +131,20 @@ public class DashboardFragment extends Fragment {
         // не знаю как лучше сделать
         return new Product();
     }
+    private void openRecipeFragment(List<Product> productList) {
+        if (productList.isEmpty()) return;
+        RecipeFragment fragment = new RecipeFragment(productList);
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment_activity_main, fragment); // Используем ID контейнера для фрагментов
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
+
 }
