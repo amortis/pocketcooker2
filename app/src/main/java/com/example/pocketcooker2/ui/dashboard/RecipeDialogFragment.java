@@ -13,13 +13,18 @@ import com.example.pocketcooker2.R;
 import com.example.pocketcooker2.data.Product;
 import com.example.pocketcooker2.data.Recipe;
 import com.example.pocketcooker2.data.RecipeAdapter;
-import com.example.pocketcooker2.data.RecipeDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +37,6 @@ public class RecipeDialogFragment extends DialogFragment {
     public RecipeDialogFragment(List<Product> productList) {
         this.productList = productList;
     }
-
     public RecipeDialogFragment() {
     }
 
@@ -113,5 +117,35 @@ public class RecipeDialogFragment extends DialogFragment {
             }
         }
         return filteredRecipes;
+    }
+
+    private class RecipeDeserializer implements JsonDeserializer<Recipe> {
+        private Map<String, Product> productMap;
+
+        public RecipeDeserializer(Map<String, Product> productMap) {
+            this.productMap = productMap;
+        }
+
+        @Override
+        public Recipe deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+
+            String id = jsonObject.get("_id").getAsString();
+            String name = jsonObject.get("name").getAsString();
+            String description = jsonObject.get("description").getAsString();
+            String photo = jsonObject.get("photo").getAsString();
+
+            JsonObject productsJson = jsonObject.getAsJsonObject("products");
+            Map<Product, Double> products = new HashMap<>();
+            for (Map.Entry<String, JsonElement> entry : productsJson.entrySet()) {
+                Product product = productMap.get(entry.getKey());
+                if (product != null) {
+                    Double quantity = entry.getValue().getAsDouble();
+                    products.put(product, quantity);
+                }
+            }
+
+            return new Recipe(id, name, products, description, photo);
+        }
     }
 }
