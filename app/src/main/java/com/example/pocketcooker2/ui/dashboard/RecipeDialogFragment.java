@@ -6,6 +6,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,7 @@ public class RecipeDialogFragment extends DialogFragment {
 
     public static RecipeDialogFragment newInstance(List<Product> productList) {
         RecipeDialogFragment fragment = new RecipeDialogFragment(productList);
+        Log.d("otlad", "Открытие RecipeDialogFragment с продуктами: " + productList.size());
         return fragment;
     }
 
@@ -55,6 +58,7 @@ public class RecipeDialogFragment extends DialogFragment {
 
         List<Recipe> allRecipes = loadRecipesFromJson();
         List<Recipe> filteredRecipes = filterRecipes(allRecipes, productList);
+        Log.d("otlad", "Отфильтрованные рецепты размер: " + filteredRecipes.size());
 
         RecipeAdapter adapter = new RecipeAdapter(filteredRecipes);
         recyclerView.setAdapter(adapter);
@@ -75,6 +79,7 @@ public class RecipeDialogFragment extends DialogFragment {
             Gson gson = gsonBuilder.create();
             Reader reader = new InputStreamReader(inputStream);
             recipes = gson.fromJson(reader, new TypeToken<List<Recipe>>(){}.getType());
+            Log.d("otlad", "Открытие recipes с рецептами: " + recipes.size());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,13 +107,19 @@ public class RecipeDialogFragment extends DialogFragment {
         Map<String, Double> userProducts = new HashMap<>();
         for (Product product : productList) {
             userProducts.put(product.getName(), product.getQuantity());
+            Log.d("otlad", "productname " + product.getName());
         }
 
         for (Recipe recipe : allRecipes) {
-            boolean canMake = true;
+            boolean canMake = false;
             for (Map.Entry<Product, Double> entry : recipe.getProducts().entrySet()) {
-                if (!userProducts.containsKey(entry.getKey().getName()) || userProducts.get(entry.getKey().getName()) < entry.getValue()) {
-                    canMake = false;
+                Product requiredProduct = entry.getKey();
+                Log.d("otlad", "productname в цикле: " + requiredProduct.getName());
+                double requiredQuantity = entry.getValue();
+
+                // Проверяем, есть ли нужный продукт у пользователя и достаточно ли его количества
+                if (userProducts.containsKey(requiredProduct.getName()) && userProducts.get(requiredProduct.getName()) >= requiredQuantity) {
+                    canMake = true;
                     break;
                 }
             }
@@ -118,6 +129,7 @@ public class RecipeDialogFragment extends DialogFragment {
         }
         return filteredRecipes;
     }
+
 
     private class RecipeDeserializer implements JsonDeserializer<Recipe> {
         private Map<String, Product> productMap;

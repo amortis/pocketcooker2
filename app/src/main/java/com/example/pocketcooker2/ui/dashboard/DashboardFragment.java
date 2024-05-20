@@ -134,6 +134,7 @@ public class DashboardFragment extends Fragment {
     private void openRecipeFragment(List<Product> productList) {
         if (productList.isEmpty()) return;
         RecipeDialogFragment dialog = RecipeDialogFragment.newInstance(productList);
+        Log.d("otlad", "Открытие RecipeDialogFragment с продуктами: " + productList.size());
         dialog.show(getParentFragmentManager(), "RecipeDialogFragment");
     }
     @Override
